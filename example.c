@@ -112,9 +112,21 @@ int main() {
     err = clBuildProgram (program, 1, &(target.device_id), "", NULL, NULL);
     CL_CHECK("clBuildProgram", err);
 
+    cl_command_queue queue = clCreateCommandQueueWithProperties(context, target.device_id, NULL, &err);
+    CL_CHECK("clCreateCommandQueue", err);
+
     int A[] = {1, 2, 3, 4};
     int B[] = {2, 3, 4, 5};
     int C[] = {0, 0, 0, 0};
+
+    // Replace all below with a primitive like:
+    // opencl_run(
+    //     context, program, etc...
+    //     "kernel_name",
+    //     IN, bufA,
+    //     INOUT, bufB,
+    //     OUT, bufC
+    // );
 
     size_t size = sizeof(int) * 4;
 
@@ -124,9 +136,6 @@ int main() {
     CL_CHECK("clCreateBuffer", err);
     cl_mem buffer_C = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, size, C, &err);
     CL_CHECK("clCreateBuffer", err);
-
-    cl_command_queue queue = clCreateCommandQueueWithProperties(context, target.device_id, NULL, &err);
-    CL_CHECK("clCreateCommandQueue", err);
 
     cl_kernel kernel = clCreateKernel(program, "simple_add", &err);
     CL_CHECK("clCreateKernel", err);
